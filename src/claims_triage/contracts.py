@@ -32,32 +32,38 @@ class ClaimRequest(BaseModel):
 
     # TODO 2.1: policy_type. Solo se admiten los valores "basico",
     #           "terceros_ampliado" y "todo_riesgo".
+    policy_type: Literal["basico", "terceros_ampliado", "todo_riesgo"]
 
     # TODO 2.2: driver_age. Numero entero; el conductor debe ser mayor de edad
     #           y no pasar de 90 anos.
+    driver_age:int = Field(ge=18, le=90)  
 
     # TODO 2.3: vehicle_age_years. Numero decimal entre 0 y 30 anos.
     #           Es OPCIONAL: puede no venir informado.
+    vehicle_age_years: float | None = Field(ge=0, le=30)  
 
     # TODO 2.4: claim_amount_eur. Numero decimal; el importe debe ser mayor
     #           que 0 y como maximo 100000.
+    claim_amount_eur: float = Field(gt=0, le=100000)
 
     # TODO 2.5: injuries. Entero que solo puede valer 0 o 1.
+    injuries : int = Field(ge=0, le=1) #puedo poner field al ser int
 
     # TODO 2.6: police_report. Entero que solo puede valer 0 o 1.
+    police_report: int = Field(ge=0, le=1) #puedo poner field al ser int
 
     # TODO 2.7: en el CSV, un dato que falta llega como "" (texto vacio), y ""
     #           no es un numero. Haced que, para vehicle_age_years, el valor ""
     #           se interprete como "no informado" (None) y cualquier otro valor
     #           pase sin cambios. Plantilla de un validador de Pydantic:
     #
-    #   @field_validator("vehicle_age_years", mode="before")
-    #   @classmethod
-    #   def empty_is_none(cls, value):
-    #       # mode="before": recibe el valor ANTES de que Pydantic lo convierta
-    #       if value == "":
-    #           return ...        # que devolver cuando esta vacio
-    #       return value          # en cualquier otro caso, el valor tal cual
+    @field_validator("vehicle_age_years", mode="before")
+    @classmethod
+    def empty_is_none(cls, value):
+        # mode="before": recibe el valor ANTES de que Pydantic lo convierta
+        if value == "":
+            return None        # que devolver cuando esta vacio
+        return value          # en cualquier otro caso, el valor tal cual
 
 
 # ---------------------------------------------------------------------------
@@ -70,6 +76,10 @@ class ClaimPrediction(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     # TODO 4.1: claim_id: el identificador del siniestro (texto).
+    claim_id: str = Field(min_length=1)
     # TODO 4.2: decision: solo puede ser "revision_manual" o "tramitacion_normal".
+    decision: Literal["revision_manual", "tramitacion_normal"]
     # TODO 4.3: risk_probability: una probabilidad, es decir, un decimal entre 0 y 1.
+    risk_probability: float = Field(ge=0,le=1)
     # TODO 4.4: model_version: la version del modelo que ha hecho la prediccion (texto).
+    model_version:str=Field(min_length=1)

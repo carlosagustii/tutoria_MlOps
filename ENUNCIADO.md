@@ -29,7 +29,7 @@ Todos los ficheros llegan **sueltos, en una sola carpeta**. Montar la estructura
 | `test_*.py` (5 ficheros) y `predicciones_esperadas.csv` | las pruebas y la salida esperada | `tests/` |
 
 Estructura final que debeis conseguir:
-
+ 
 ```text
 claims-triage/
   pyproject.toml
