@@ -44,4 +44,11 @@ def preprocess(request):
     # TODO 3.3: devolver los valores del siniestro, ya limpios, en el orden
     #   exacto de FEATURE_NAMES. El identificador (claim_id) no es un dato para
     #   el modelo y no debe incluirse.
-    return [request.driver_age, request.vehicle_age_years, request.claim_amount_eur, request.injuries, request.police_report, policy_code]
+    return [
+            request.driver_age,
+            request.vehicle_age_years, 
+            request.claim_amount_eur, 
+            request.injuries, 
+            request.police_report, 
+            policy_code
+        ]

@@ -29,13 +29,27 @@ def read_claims(path):
     """EJERCICIO 2: leer el CSV y devolver la lista de siniestros validados."""
     # TODO 2.8: leer el fichero CSV indicado, cuyas filas tienen las columnas
     #   de ClaimRequest.
-
+    lista =[]
+    with open(path, "r", encoding="utf-8", newline="") as f:
+        lector = csv.DictReader(f)
+        
     # TODO 2.9: validar cada fila con ClaimRequest. Si alguna fila no es valida,
     #   hay que parar con un ValueError cuyo mensaje diga en que LINEA del
     #   fichero esta el problema y cual es (la cabecera es la linea 1).
+    
+        for numero, fila in enumerate(lector, start=2): 
+            #la cabecera esta en la linea 1 asi que empezamos por 2
+            try:
+                #sin los astericos no funciona, porque ClaimRequest espera
+                #argumentos con nombre, y fila es un diccionario tipo {nombre_columna: valor, ...}
+                lista.append(ClaimRequest(**fila)) 
+                
+            except ValidationError as e:
+                raise ValueError(f"Error {e} en la linea {numero}")
+
 
     # TODO 2.10: devolver la lista con todos los siniestros validados.
-    raise NotImplementedError("TODO: ejercicio 2 (read_claims)")
+    return lista
 
 
 def main(argv=None):
@@ -49,17 +63,34 @@ def main(argv=None):
     # TODO 4.12: leer y validar los siniestros y cargar el modelo. Si algo de
     #   eso falla (ValueError), mostrar el error por la salida de errores y
     #   terminar con codigo de salida 2, SIN escribir ningun fichero.
-
+    try:
+        siniestros = read_claims(args.input)
+        modelo = load_model(args.model)
+    except ValueError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 2
     # TODO 4.13: obtener la prediccion de cada siniestro.
+    predicciones = []
+    for siniestro in siniestros:
+        predicciones.append(predict(modelo, siniestro))
 
     # TODO 4.14: escribir el CSV de salida (con las columnas de OUTPUT_COLUMNS)
     #   en la ruta --output, creando la carpeta si no existe. Solo se escribe
     #   cuando todo lo anterior ha ido bien: si algo falla, no debe quedar un
     #   fichero a medias.
+    carpeta = os.path.dirname(args.output)  ##esta parte no tenia ni idea me la ha codificado claude
+    if carpeta:
+        os.makedirs(carpeta, exist_ok=True)
+    with open(args.output, "w", encoding="utf-8", newline="") as f:
+        escritor = csv.DictWriter(f, fieldnames=OUTPUT_COLUMNS)
+        escritor.writeheader()
+        for prediccion in predicciones:
+            escritor.writerow(prediccion.model_dump())
 
     # TODO 4.15: mostrar cuantos siniestros se han predicho y terminar con
     #   codigo de salida 0.
-    raise NotImplementedError("TODO: ejercicio 4 (main)")
+    print(f"{len(predicciones)} siniestros predichos -> {args.output}")
+    return 0
 
 
 if __name__ == "__main__":

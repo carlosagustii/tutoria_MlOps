@@ -1,0 +1,13 @@
+claim_id,decision,risk_probability,model_version
+C001,tramitacion_normal,0.143,claims-triage-1.0.0
+C002,tramitacion_normal,0.078,claims-triage-1.0.0
+C003,tramitacion_normal,0.261,claims-triage-1.0.0
+C004,revision_manual,0.869,claims-triage-1.0.0
+C005,tramitacion_normal,0.032,claims-triage-1.0.0
+C006,revision_manual,0.512,claims-triage-1.0.0
+C007,tramitacion_normal,0.063,claims-triage-1.0.0
+C008,tramitacion_normal,0.057,claims-triage-1.0.0
+C009,revision_manual,0.949,claims-triage-1.0.0
+C010,tramitacion_normal,0.05,claims-triage-1.0.0
+C011,tramitacion_normal,0.04,claims-triage-1.0.0
+C012,tramitacion_normal,0.321,claims-triage-1.0.0
